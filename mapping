@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GEE Web App</title>
+    <script src="https://earthengine.googleapis.com/api/gee_api.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+    <style>
+        #map { height: 600px; width: 100%; }
+    </style>
+</head>
+<body>
+    <h1>Google Earth Engine Web App</h1>
+    <input type="text" id="lat" placeholder="Latitude">
+    <input type="text" id="lon" placeholder="Longitude">
+    <button onclick="searchLocation(parseFloat(document.getElementById('lat').value), parseFloat(document.getElementById('lon').value))">Search</button>
+    <div id="map"></div>
+
+    <script>
+        // Initialize the Earth Engine API
+        ee.initialize();
+
+        // Create a map
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 40.7128, lng: -74.0060},
+            zoom: 8
+        });
+
+        function searchLocation(lat, lon) {
+            var point = ee.Geometry.Point([lon, lat]);
+            var dataset = ee.ImageCollection('NASA/FLDAS/NOAH01/C/GL/M/V001')
+                          .filterBounds(point)
+                          .filterDate('2018-11-01', '2018-12-01');
+            var precipitation = dataset.select('Rainf_f_tavg').mean();
+            // Add logic to display the layer on the map
+            map.setCenter(lon, lat, 8);
+        }
+
+        var dataset=ee.ImageCollection('NASA/FLDAS/NOAH01/C/GL/M/V001')
+                      .filter(ee.Filter.date('2024-01-01', '2024-08-01'));
+                      
+        // 1982-2024
+        
+        var evapo = dataset.select('Evap_tavg');
+        var soilMoisture = dataset.select('SoilMoi00_10cm_tavg');
+        var precipitation = dataset.select('Rainf_f_tavg');
+        var surfacePressure = dataset.select('Psurf_f_tavg');
+        
+        
+        var band_viz = {
+          min: 0.0,
+          max: 0.00005,
+          opacity: 1.0,
+          palette: ['black', 'blue', 'purple', 'cyan', 'green', 'yellow', 'red']
+        };
+        
+        Map.setCenter(30.0, 30.0, 2);
+        // Map.addLayer(evapo, band_viz, 'Average Evapotranspiration');
+        Map.addLayer(precipitation, band_viz);
+    </script>
+</body>
+</html>
