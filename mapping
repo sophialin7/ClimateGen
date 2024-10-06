@@ -55,7 +55,7 @@
         
         Map.setCenter(30.0, 30.0, 2);
         // Map.addLayer(evapo, band_viz, 'Average Evapotranspiration');
-        Map.addLayer(precipitation, band_viz);
+        Map.addLayer(precipitation, band_viz, 'Average Precipitation);
     </script>
 </body>
 </html>
